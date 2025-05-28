@@ -54,11 +54,7 @@ app.put('/books/:id', (req, res) => {
     if (!item) {
         return res.status(404).send({error: 'Item not found'});
     }
-    const title = req.body.title;
-    const year = req.body.year;
 
-    if (title) item.title = title;
-    if (year) item.year = year;
     res.status(200).send(item);
 });
 
