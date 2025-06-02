@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
+
 const port = 3000;
 
 
@@ -68,6 +70,24 @@ app.delete('/books/:id', (req, res) => {
     arrayBooks.splice(index, 1);
     res.send(arrayBooks);
 });
+
+fs.createReadStream('example.txt', 'utf8').on('data', function (chunk) {
+
+    const stream = fs.createWriteStream('output.txt', {flags: 'a'});
+    stream.write(`${chunk} 
+    ---------------------------------write---------------------------------------------`);
+    stream.end();
+
+    console.log('------------------------------Read------------------------------------------------');
+    console.log('Received chunk:', chunk);
+
+}).on('end', function () {
+    console.log('Finished reading file.');
+}).on('error', function (err) {
+    console.error('Error reading file:', err);
+});
+
+
 
 // Run server
 app.listen(port, () => {
