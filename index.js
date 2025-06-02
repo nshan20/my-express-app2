@@ -71,25 +71,26 @@ app.delete('/books/:id', (req, res) => {
     res.send(arrayBooks);
 });
 
-fs.createReadStream('example.txt', 'utf8').on('data', function (chunk) {
-
-    const stream = fs.createWriteStream('output.txt', {flags: 'a'});
-    stream.write(`${chunk} 
-    ---------------------------------write---------------------------------------------`);
-    stream.end();
-
-    console.log('------------------------------Read------------------------------------------------');
-    console.log('Received chunk:', chunk);
-
-}).on('end', function () {
-    console.log('Finished reading file.');
-}).on('error', function (err) {
-    console.error('Error reading file:', err);
-});
-
-
 
 // Run server
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);
+});
+
+
+
+const readStream = fs.createReadStream('example.txt', { encoding: 'utf8' });
+const writeStream = fs.createWriteStream('output.txt', { flags: 'a' });
+
+readStream.on('data', (chunk) => {
+    writeStream.write(`${chunk}
+---------------------------------write---------------------------------------------`);
+
+    console.log('------------------------------Read------------------------------------------------');
+    console.log('Received chunk:', chunk);
+});
+
+readStream.on('end', () => {
+    writeStream.end(); // Закрываем поток записи один раз в конце
+    console.log('Reading completed.');
 });
